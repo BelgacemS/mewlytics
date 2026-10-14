@@ -606,7 +606,7 @@ Chaque étape de cette section ajoute ses contrôles à `scripts/check-security.
 
 - [ ] 40. Compte et Mes tournois
   - Objectif : inscription, connexion, jeton gardé en mémoire, formulaire de saisie, filtre `source` sur les statistiques.
-  - Vérification : via la gateway, inscription, connexion puis saisie, et le tournoi apparaît dans Mes tournois ; un rechargement de la page vide le jeton.
+  - Vérification : via la gateway, inscription, connexion puis saisie, et le tournoi apparaît dans Mes tournois ; un rechargement de la page vide le jeton ; captures.
   - Dépend de : 10, 16, 27.
 
 - [ ] 41. Créateur d'équipe
@@ -617,7 +617,8 @@ Chaque étape de cette section ajoute ses contrôles à `scripts/check-security.
   - Vérification :
     - on ne peut pas ajouter une 7e espèce ;
     - un doublon est refusé ;
-    - le score affiché égale la somme des β renvoyés par `/api/stats/tierlist?kind=bt`.
+    - le score affiché égale la somme des β renvoyés par `/api/stats/tierlist?kind=bt` ;
+    - capture d'une équipe complète avec sa couverture de types et son score.
   - Dépend de : 19, 27, 37.
 
 ### K. Rendu
