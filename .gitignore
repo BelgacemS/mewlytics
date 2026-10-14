@@ -1,0 +1,31 @@
+# Local notes and course material
+idee.md
+sujet.pdf
+
+# Secrets
+.env
+*.pem
+*.key
+*.crt
+
+# Generated manifests and local overlay
+generated/
+k8s/overlays/dev/
+
+# Data and experiment outputs
+/data/
+/runs/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Front
+node_modules/
+dist/
+
+# OS
+.DS_Store
