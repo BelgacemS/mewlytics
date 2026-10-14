@@ -126,7 +126,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
     - la branche `dev` existe.
   - Hors périmètre : tout code de service.
 
-- [ ] 2. Cluster local et mémoire
+- [x] 2. Cluster local et mémoire
   - Objectif :
     - `scripts/bootstrap-minikube.sh` : minikube avec `metrics-server`, CRD Gateway API, Istio en profil minimal avec CNI, ressources réduites et `values.gateways.seccompProfile.type=RuntimeDefault` ;
     - `scripts/addons.sh install|remove` pour Kiali et Prometheus ;
