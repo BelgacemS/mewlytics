@@ -22,7 +22,8 @@ Requirements: Docker Desktop with at least 4.5 GB of memory, minikube, kubectl, 
 ```sh
 brew install minikube
 cd ~ && curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.31.1 sh -
-export PATH="$HOME/istio-1.31.1/bin:$PATH"
+echo 'export PATH="$HOME/istio-1.31.1/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
 Create the cluster (minikube with 4 GB and 4 CPUs, metrics-server, Gateway API CRDs, Istio in sidecar mode with the CNI):

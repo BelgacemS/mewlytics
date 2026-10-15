@@ -17,3 +17,11 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.17.0",
 ]
+
+[tool.pytest.ini_options]
+# Services have test files with the same names
+addopts = ["--import-mode=importlib"]
+
+[tool.ruff]
+# First-party packages for import sorting
+src = ["services/*/src", "libs/*/src"]
