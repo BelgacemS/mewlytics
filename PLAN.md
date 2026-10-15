@@ -147,7 +147,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
 
 ### B. Palier 10 : un service conteneurisé et déployé
 
-- [ ] 3. Service `catalog` en lecture
+- [x] 3. Service `catalog` en lecture
   - Objectif :
     - modèles SQLAlchemy : tournoi, joueur, participation, membre d'équipe, match ;
     - `db.py` : en SQLite mémoire, `StaticPool` et sessions prises sous un `threading.Lock` global. C'est le seul usage que `StaticPool` supporte ;
