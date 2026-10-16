@@ -179,7 +179,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
     
     L'étape suppose un push, donc notre accord.
 
-- [ ] 6. Déploiement Kubernetes
+- [x] 6. Déploiement Kubernetes
   - Objectif :
     - namespace avec les labels `pod-security.kubernetes.io/warn=restricted` et `audit=restricted` ;
     - Deployment et Service de `catalog`, sur un gabarit durci :
