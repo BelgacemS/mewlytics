@@ -38,6 +38,7 @@ spec:
             requests:
               cpu: 50m
               memory: 96Mi
+            # 75Mi used at step 6, before gRPC and MySQL
             limits:
               cpu: 500m
               memory: 192Mi

@@ -189,7 +189,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
       - `capabilities: drop [ALL]` ;
       - requests, limits et probes ;
     - Kustomize, base et overlay local, avec un tag d'image immuable ;
-    - `scripts/deploy.sh local` déploie les images Docker Hub, et `scripts/deploy.sh local --dev <svc>` lance `minikube image build -t <user>/mewlytics-<svc>:dev-<sha>` puis `kustomize edit set image` dans `k8s/overlays/dev/`, qui n'est pas versionné.
+    - `scripts/deploy.sh local` déploie les images Docker Hub, et `scripts/deploy.sh local --dev <svc>` lance `minikube image build -t <user>/mewlytics-<svc>:dev-<sha>` (suivi d'un horodatage si l'arbre de travail est modifié, pour que chaque build déclenche un rollout), puis régénère `k8s/overlays/dev/kustomization.yaml`, qui n'est pas versionné. Ce répertoire garde le dernier build dev de chaque service, sauf si son image a disparu du cluster.
   - Fichiers : `k8s/base/`, `k8s/overlays/local/`, `scripts/deploy.sh`.
   - Vérification :
     - le pod est Running ;
