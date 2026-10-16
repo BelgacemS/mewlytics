@@ -102,7 +102,7 @@ Job ingestion pokedex             --gRPC StreamEntries puis UpsertSpecies--> cat
 - Ignorés par git :
   - `idee.md`, `sujet.pdf` ;
   - `.env`, `*.pem`, `*.key`, `*.crt`, `generated/`, `k8s/overlays/dev/` ;
-  - `data/`, `runs/`, `node_modules/`, `dist/`, `.venv/`.
+  - `data/`, `runs/`, `captures/`, `node_modules/`, `dist/`, `.venv/`.
 
 ## Étapes
 

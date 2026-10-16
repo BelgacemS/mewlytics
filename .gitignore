@@ -16,6 +16,9 @@ k8s/overlays/dev/
 /data/
 /runs/
 
+# Screenshots for the report
+/captures/
+
 # Python
 .venv/
 __pycache__/
