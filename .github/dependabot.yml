@@ -1,0 +1,18 @@
+# PRs go to dev, the integration branch. Security updates still target main.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: dev
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: docker
+    directories: ["/services/*"]
+    target-branch: dev
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7

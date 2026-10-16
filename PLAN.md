@@ -163,7 +163,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
     - `minikube image build` réussit ;
     - le conteneur démarre et répond sur `/healthz`, y compris avec le système de fichiers en lecture seule et `/tmp` en tmpfs.
 
-- [ ] 5. CI et publication sur Docker Hub
+- [x] 5. CI et publication sur Docker Hub
   - Objectif :
     - workflow : ruff et pytest à chaque push ;
     - sur tag, une matrice par service : build `linux/amd64,linux/arm64` sous QEMU et push vers `<user>/mewlytics-<svc>` (images publiques). Pour commencer, `catalog` seulement ;
