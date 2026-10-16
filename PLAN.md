@@ -40,7 +40,7 @@ Critère de réussite global, depuis un clone neuf :
 |---|---|---|
 | Services | Python 3.12, FastAPI, uvicorn (un worker) | validation et OpenAPI intégrées, peu de code |
 | Environnement | workspace uv : un `pyproject.toml` par service, un seul `uv.lock`. Commandes `uv sync --all-packages` et `uv run --package <svc> ...` | versions identiques entre services |
-| Base | SQLAlchemy 2.0 et `DATABASE_URL`. SQLite en mémoire pour les tests et les paliers 10 à 14 (`StaticPool`, écritures sous un verrou global), puis MySQL 8.4 | même code ; c'est le « en mémoire d'abord » demandé par l'énoncé |
+| Base | SQLAlchemy 2.x et `DATABASE_URL`. SQLite en mémoire pour les tests et les paliers 10 à 14 (`StaticPool`, écritures sous un verrou global), puis MySQL 8.4 | même code ; c'est le « en mémoire d'abord » demandé par l'énoncé |
 | Base par service | une instance MySQL, un schéma et un utilisateur par service | isolation sans trois serveurs en RAM |
 | Liens internes | REST de `catalog` vers `auth` (JWKS) et d'`ingestion` vers `analytics` (refresh) ; gRPC (`grpc.server` synchrone) d'`ingestion` et d'`analytics` vers `catalog` | palier 14 atteint sans gRPC ; gRPC rapporte le bonus avec un contrat typé et du streaming |
 | Stubs gRPC | générés par script, commités, contrôlés en CI | Dockerfiles simples |

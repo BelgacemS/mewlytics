@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from datetime import UTC, datetime
 
 from fastapi.testclient import TestClient
 
@@ -12,7 +12,7 @@ def add_tournaments(*days: int) -> None:
         session.add_all(
             Tournament(
                 name=f"Day {d}",
-                date=datetime(2026, 9, d),
+                date=datetime(2026, 9, d, tzinfo=UTC),
                 format="M-C",
                 organizer=None,
                 player_count=8,
@@ -64,7 +64,7 @@ def test_detail(client: TestClient, tournament_id: int) -> None:
     body = response.json()
 
     assert body["name"] == "Regional"
-    assert body["date"] == "2026-09-20T09:00:00"
+    assert body["date"] == "2026-09-20T09:00:00Z"
     assert "external_id" not in body
 
     # Placed players first, unplaced last
