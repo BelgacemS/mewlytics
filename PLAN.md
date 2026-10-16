@@ -156,7 +156,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
   - Vérification : `uv run --package catalog pytest services/catalog` ; `uv run --package catalog uvicorn catalog.main:app` puis `curl` sur chaque endpoint.
   - Hors périmètre : écritures, gRPC.
 
-- [ ] 4. Image Docker
+- [x] 4. Image Docker
   - Objectif : Dockerfile multi-stage avec uv, utilisateur non root, image slim. Le conteneur lance directement le Python du venv, pas `uv run`.
   - Fichiers : `services/catalog/Dockerfile`, `.dockerignore`.
   - Vérification :

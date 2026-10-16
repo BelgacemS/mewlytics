@@ -1,0 +1,11 @@
+# Allowlist: images only need the workspace files and the service sources.
+# Directories are re-included whole, then trimmed: minikube image build does
+# not look inside an excluded directory, so `!services/*/src` would not work.
+*
+!pyproject.toml
+!uv.lock
+!services
+!libs
+**/tests
+**/__pycache__
+**/.pytest_cache
