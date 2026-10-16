@@ -1,0 +1,9 @@
+# PSA restricted in warn and audit mode for now; enforce comes once every
+# workload, sidecars included, is known to comply.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mewlytics
+  labels:
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted

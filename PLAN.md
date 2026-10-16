@@ -40,7 +40,7 @@ Critère de réussite global, depuis un clone neuf :
 |---|---|---|
 | Services | Python 3.12, FastAPI, uvicorn (un worker) | validation et OpenAPI intégrées, peu de code |
 | Environnement | workspace uv : un `pyproject.toml` par service, un seul `uv.lock`. Commandes `uv sync --all-packages` et `uv run --package <svc> ...` | versions identiques entre services |
-| Base | SQLAlchemy 2.0 et `DATABASE_URL`. SQLite en mémoire pour les tests et les paliers 10 à 14 (`StaticPool`, écritures sous un verrou global), puis MySQL 8.4 | même code ; c'est le « en mémoire d'abord » demandé par l'énoncé |
+| Base | SQLAlchemy 2.x et `DATABASE_URL`. SQLite en mémoire pour les tests et les paliers 10 à 14 (`StaticPool`, écritures sous un verrou global), puis MySQL 8.4 | même code ; c'est le « en mémoire d'abord » demandé par l'énoncé |
 | Base par service | une instance MySQL, un schéma et un utilisateur par service | isolation sans trois serveurs en RAM |
 | Liens internes | REST de `catalog` vers `auth` (JWKS) et d'`ingestion` vers `analytics` (refresh) ; gRPC (`grpc.server` synchrone) d'`ingestion` et d'`analytics` vers `catalog` | palier 14 atteint sans gRPC ; gRPC rapporte le bonus avec un contrat typé et du streaming |
 | Stubs gRPC | générés par script, commités, contrôlés en CI | Dockerfiles simples |
@@ -102,7 +102,7 @@ Job ingestion pokedex             --gRPC StreamEntries puis UpsertSpecies--> cat
 - Ignorés par git :
   - `idee.md`, `sujet.pdf` ;
   - `.env`, `*.pem`, `*.key`, `*.crt`, `generated/`, `k8s/overlays/dev/` ;
-  - `data/`, `runs/`, `node_modules/`, `dist/`, `.venv/`.
+  - `data/`, `runs/`, `captures/`, `node_modules/`, `dist/`, `.venv/`.
 
 ## Étapes
 
@@ -126,7 +126,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
     - la branche `dev` existe.
   - Hors périmètre : tout code de service.
 
-- [ ] 2. Cluster local et mémoire
+- [x] 2. Cluster local et mémoire
   - Objectif :
     - `scripts/bootstrap-minikube.sh` : minikube avec `metrics-server`, CRD Gateway API, Istio en profil minimal avec CNI, ressources réduites et `values.gateways.seccompProfile.type=RuntimeDefault` ;
     - `scripts/addons.sh install|remove` pour Kiali et Prometheus ;
@@ -147,7 +147,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
 
 ### B. Palier 10 : un service conteneurisé et déployé
 
-- [ ] 3. Service `catalog` en lecture
+- [x] 3. Service `catalog` en lecture
   - Objectif :
     - modèles SQLAlchemy : tournoi, joueur, participation, membre d'équipe, match ;
     - `db.py` : en SQLite mémoire, `StaticPool` et sessions prises sous un `threading.Lock` global. C'est le seul usage que `StaticPool` supporte ;
@@ -156,20 +156,22 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
   - Vérification : `uv run --package catalog pytest services/catalog` ; `uv run --package catalog uvicorn catalog.main:app` puis `curl` sur chaque endpoint.
   - Hors périmètre : écritures, gRPC.
 
-- [ ] 4. Image Docker
+- [x] 4. Image Docker
   - Objectif : Dockerfile multi-stage avec uv, utilisateur non root, image slim. Le conteneur lance directement le Python du venv, pas `uv run`.
   - Fichiers : `services/catalog/Dockerfile`, `.dockerignore`.
   - Vérification :
     - `minikube image build` réussit ;
     - le conteneur démarre et répond sur `/healthz`, y compris avec le système de fichiers en lecture seule et `/tmp` en tmpfs.
 
-- [ ] 5. CI et publication sur Docker Hub
+- [x] 5. CI et publication sur Docker Hub
   - Objectif :
     - workflow : ruff et pytest à chaque push ;
     - sur tag, une matrice par service : build `linux/amd64,linux/arm64` sous QEMU et push vers `<user>/mewlytics-<svc>` (images publiques). Pour commencer, `catalog` seulement ;
     - actions épinglées par SHA complet, `permissions:` au minimum ;
+    - images de base des Dockerfiles épinglées par digest (`python:3.12-slim-trixie@sha256:...`, `ghcr.io/astral-sh/uv:0.13.1@sha256:...`), tenues à jour par Dependabot (écosystèmes `docker` et `github-actions`) ;
+    - `uv lock --check` dans le job de lint : le Dockerfile installe avec `--frozen`, qui ne vérifie pas que le lockfile est à jour ;
     - compte Docker Hub avec 2FA, token d'accès dédié stocké dans les secrets GitHub.
-  - Fichiers : `.github/workflows/ci.yml`.
+  - Fichiers : `.github/workflows/ci.yml`, `.github/dependabot.yml`, `services/catalog/Dockerfile`.
   - Vérification :
     - run vert ;
     - `docker buildx imagetools inspect <image>` montre les deux architectures ;
@@ -177,7 +179,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
     
     L'étape suppose un push, donc notre accord.
 
-- [ ] 6. Déploiement Kubernetes
+- [x] 6. Déploiement Kubernetes
   - Objectif :
     - namespace avec les labels `pod-security.kubernetes.io/warn=restricted` et `audit=restricted` ;
     - Deployment et Service de `catalog`, sur un gabarit durci :
@@ -187,7 +189,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
       - `capabilities: drop [ALL]` ;
       - requests, limits et probes ;
     - Kustomize, base et overlay local, avec un tag d'image immuable ;
-    - `scripts/deploy.sh local` déploie les images Docker Hub, et `scripts/deploy.sh local --dev <svc>` lance `minikube image build -t <user>/mewlytics-<svc>:dev-<sha>` puis `kustomize edit set image` dans `k8s/overlays/dev/`, qui n'est pas versionné.
+    - `scripts/deploy.sh local` déploie les images Docker Hub, et `scripts/deploy.sh local --dev <svc>` lance `minikube image build -t <user>/mewlytics-<svc>:dev-<sha>` (suivi d'un horodatage si l'arbre de travail est modifié, pour que chaque build déclenche un rollout), puis régénère `k8s/overlays/dev/kustomization.yaml`, qui n'est pas versionné. Ce répertoire garde le dernier build dev de chaque service, sauf si son image a disparu du cluster.
   - Fichiers : `k8s/base/`, `k8s/overlays/local/`, `scripts/deploy.sh`.
   - Vérification :
     - le pod est Running ;
@@ -606,7 +608,7 @@ Chaque étape de cette section ajoute ses contrôles à `scripts/check-security.
 
 - [ ] 40. Compte et Mes tournois
   - Objectif : inscription, connexion, jeton gardé en mémoire, formulaire de saisie, filtre `source` sur les statistiques.
-  - Vérification : via la gateway, inscription, connexion puis saisie, et le tournoi apparaît dans Mes tournois ; un rechargement de la page vide le jeton.
+  - Vérification : via la gateway, inscription, connexion puis saisie, et le tournoi apparaît dans Mes tournois ; un rechargement de la page vide le jeton ; captures.
   - Dépend de : 10, 16, 27.
 
 - [ ] 41. Créateur d'équipe
@@ -617,7 +619,8 @@ Chaque étape de cette section ajoute ses contrôles à `scripts/check-security.
   - Vérification :
     - on ne peut pas ajouter une 7e espèce ;
     - un doublon est refusé ;
-    - le score affiché égale la somme des β renvoyés par `/api/stats/tierlist?kind=bt`.
+    - le score affiché égale la somme des β renvoyés par `/api/stats/tierlist?kind=bt` ;
+    - capture d'une équipe complète avec sa couverture de types et son score.
   - Dépend de : 19, 27, 37.
 
 ### K. Rendu

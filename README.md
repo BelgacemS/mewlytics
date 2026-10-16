@@ -6,6 +6,60 @@ The application is built as microservices on Kubernetes.
 
 Work in progress. Setup and development commands are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Local cluster
+
+Pinned versions (also in `scripts/versions.sh`):
+
+| Component | Version |
+|---|---|
+| minikube | v1.39.0 |
+| Kubernetes | v1.36.5 |
+| Istio | 1.31.1 (supports Kubernetes 1.32 to 1.37) |
+| Gateway API CRDs | v1.6.3 |
+
+Requirements: Docker Desktop with at least 4.5 GB of memory, minikube, kubectl, and istioctl at the pinned version:
+
+```sh
+brew install minikube
+cd ~ && curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.31.1 sh -
+echo 'export PATH="$HOME/istio-1.31.1/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Create the cluster (minikube with 4 GB and 4 CPUs, metrics-server, Gateway API CRDs, Istio in sidecar mode with the CNI):
+
+```sh
+scripts/bootstrap-minikube.sh
+```
+
+Kiali and Prometheus are only installed while taking screenshots:
+
+```sh
+scripts/addons.sh install
+istioctl dashboard kiali
+scripts/addons.sh remove
+```
+
+Stop the cluster between sessions with `minikube stop`. The first run of `scripts/bootstrap-minikube.sh` took 7 min 23 s, mostly image downloads.
+
+### Memory
+
+Measured on a MacBook Air M1 with 8 GB, Docker Desktop at 4.5 GB, minikube at 4 GB, three test pods with a sidecar (Python `http.server`), and a browser and an editor open:
+
+| | Memory |
+|---|---|
+| minikube node (`kubectl top node`) | 1602 Mi of 4 Gi |
+| Kubernetes control plane and system pods | 888 Mi, of which kube-apiserver 460 Mi |
+| istiod | 48 to 63 Mi |
+| istio-cni-node | 49 Mi |
+| Sidecar, per pod | 30 to 34 Mi |
+| Kiali and Prometheus, while installed | 224 Mi |
+| minikube container during `minikube image build` (`docker stats`) | 1.77 GiB peak |
+
+No pod was OOM killed during the image build. macOS reported memory pressure at the warning level (yellow), never critical, with about 2.6 GB of swap in use.
+
+Decision: Istio stays in sidecar mode. The three sidecars use about 100 Mi in total and the node keeps about 2.4 Gi free, so the ambient mode would save little and would require a waypoint for the L7 policies. Memory will be measured again on the real application.
+
 ## Data sources
 
 - Tournament data comes from the public [Limitless API](https://docs.limitlesstcg.com/developer/tournaments). No scraping, and requests stay within the API rate limits.

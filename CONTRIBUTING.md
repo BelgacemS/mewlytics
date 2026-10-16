@@ -54,6 +54,8 @@ uv add --package <svc> <dependency>   # runtime dependency of one service
 uv add --dev <tool>                   # dev tool for the whole workspace
 ```
 
+`uv run --package <svc>` installs the dev group of that service, not the one of the workspace root. Each service therefore declares its test tools in its own dev group (`uv add --package <svc> --dev pytest`).
+
 Run a command inside a service environment:
 
 ```sh
