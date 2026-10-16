@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from datetime import datetime
+from datetime import UTC, datetime
 
 import pytest
 from fastapi.testclient import TestClient
@@ -33,7 +33,7 @@ def tournament_id(tables: None) -> int:
         t = Tournament(
             external_id="limitless-1",
             name="Regional",
-            date=datetime(2026, 9, 20, 9, 0),
+            date=datetime(2026, 9, 20, 9, 0, tzinfo=UTC),
             format="M-C",
             organizer="Some league",
             player_count=3,

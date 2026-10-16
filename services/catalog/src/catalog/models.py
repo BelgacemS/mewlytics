@@ -1,9 +1,43 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 
-from sqlalchemy import JSON, CheckConstraint, ForeignKey, String, UniqueConstraint
+from sqlalchemy import (
+    JSON,
+    CheckConstraint,
+    DateTime,
+    Dialect,
+    ForeignKey,
+    String,
+    TypeDecorator,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+class UTCDateTime(TypeDecorator[datetime]):
+    """Aware datetime stored as naive UTC.
+
+    SQLite and MySQL DATETIME keep no time zone. Naive values are rejected so
+    that a local time can never be stored as if it were UTC.
+    """
+
+    impl = DateTime
+    cache_ok = True
+
+    def process_bind_param(
+        self, value: datetime | None, dialect: Dialect
+    ) -> datetime | None:
+        if value is None:
+            return None
+        if value.tzinfo is None:
+            raise ValueError(f"naive datetime {value}, expected a time zone")
+        return value.astimezone(UTC).replace(tzinfo=None)
+
+    def process_result_value(
+        self, value: datetime | None, dialect: Dialect
+    ) -> datetime | None:
+        return None if value is None else value.replace(tzinfo=UTC)
 
 
 class Base(DeclarativeBase):
@@ -17,8 +51,8 @@ class Tournament(Base):
     # Limitless tournament id, null for tournaments entered by users
     external_id: Mapped[str | None] = mapped_column(String(64), unique=True)
     name: Mapped[str] = mapped_column(String(200))
-    # Scheduled start, stored as naive UTC
-    date: Mapped[datetime] = mapped_column(index=True)
+    # Scheduled start
+    date: Mapped[datetime] = mapped_column(UTCDateTime, index=True)
     format: Mapped[str] = mapped_column(String(16))
     organizer: Mapped[str | None] = mapped_column(String(200))
     player_count: Mapped[int]

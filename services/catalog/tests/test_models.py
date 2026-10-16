@@ -1,21 +1,39 @@
-from datetime import datetime
+from datetime import UTC, datetime, timedelta, timezone
 
 import pytest
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, StatementError
 
 from catalog.db import session_scope
 from catalog.models import Entry, Match, Player, TeamMember, Tournament
 
 
-def make_tournament() -> Tournament:
+def make_tournament(date: datetime = datetime(2026, 9, 12, tzinfo=UTC)) -> Tournament:
     return Tournament(
         name="T",
-        date=datetime(2026, 9, 12),
+        date=date,
         format="M-C",
         organizer=None,
         player_count=2,
     )
+
+
+def test_date_read_back_in_utc(tables: None) -> None:
+    paris = timezone(timedelta(hours=2))
+    with session_scope() as session:
+        session.add(make_tournament(datetime(2026, 9, 12, 11, 0, tzinfo=paris)))
+    with session_scope() as session:
+        date = session.scalars(select(Tournament.date)).one()
+    assert date == datetime(2026, 9, 12, 9, 0, tzinfo=UTC)
+    assert date.tzinfo is UTC
+
+
+def test_naive_date_rejected(tables: None) -> None:
+    with (
+        pytest.raises(StatementError, match="naive datetime"),
+        session_scope() as session,
+    ):
+        session.add(make_tournament(datetime(2026, 9, 12)))
 
 
 def test_winner_must_be_a_player(tables: None) -> None:
