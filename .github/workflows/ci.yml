@@ -48,6 +48,8 @@ jobs:
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [lint, test]
+    # Holds the Docker Hub token; only v* tags may deploy to it
+    environment: dockerhub
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
