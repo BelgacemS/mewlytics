@@ -168,8 +168,10 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
     - workflow : ruff et pytest à chaque push ;
     - sur tag, une matrice par service : build `linux/amd64,linux/arm64` sous QEMU et push vers `<user>/mewlytics-<svc>` (images publiques). Pour commencer, `catalog` seulement ;
     - actions épinglées par SHA complet, `permissions:` au minimum ;
+    - images de base des Dockerfiles épinglées par digest (`python:3.12-slim-trixie@sha256:...`, `ghcr.io/astral-sh/uv:0.13.1@sha256:...`), tenues à jour par Dependabot (écosystèmes `docker` et `github-actions`) ;
+    - `uv lock --check` dans le job de lint : le Dockerfile installe avec `--frozen`, qui ne vérifie pas que le lockfile est à jour ;
     - compte Docker Hub avec 2FA, token d'accès dédié stocké dans les secrets GitHub.
-  - Fichiers : `.github/workflows/ci.yml`.
+  - Fichiers : `.github/workflows/ci.yml`, `.github/dependabot.yml`, `services/catalog/Dockerfile`.
   - Vérification :
     - run vert ;
     - `docker buildx imagetools inspect <image>` montre les deux architectures ;
