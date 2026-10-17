@@ -98,6 +98,7 @@ Job ingestion pokedex             --gRPC StreamEntries puis UpsertSpecies--> cat
   - Exemples : `Init repository`, `Skip pairings without opponent`.
   - Pas de corps de commit sans vrai besoin, pas de trailer.
 - Fin d'étape vérifiée : on coche la case de l'étape dans `PLAN.md`, puis commit sur la branche de l'étape (le commit contient le plan à jour) et merge dans `dev`. Le push et le merge de `dev` dans `main` se font sur demande.
+- Avant chaque tag de palier : audit du diff depuis le tag précédent (bugs, sécurité, écarts avec le plan, documentation). Les corrections passent par une branche `fix/review-<version>`, mergée dans `dev` avant le tag.
 - On prévient l'autre avant de commencer une étape. Une étape dont toutes les dépendances sont cochées peut se faire en parallèle d'une autre.
 - Ignorés par git :
   - `idee.md`, `sujet.pdf` ;
