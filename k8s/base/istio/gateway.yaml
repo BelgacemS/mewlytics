@@ -1,0 +1,16 @@
+# Istio deploys the proxy for this Gateway itself (Deployment and LoadBalancer
+# Service named gateway-istio, in this namespace). Its pod gets the RuntimeDefault
+# seccomp profile set at install time, so it passes PSA restricted.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway
+spec:
+  gatewayClassName: istio
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
