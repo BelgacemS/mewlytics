@@ -99,6 +99,7 @@ Job ingestion pokedex             --gRPC StreamEntries puis UpsertSpecies--> cat
   - Pas de corps de commit sans vrai besoin, pas de trailer.
 - Fin d'étape vérifiée : on coche la case de l'étape dans `PLAN.md`, puis commit sur la branche de l'étape (le commit contient le plan à jour) et merge dans `dev`. Le push et le merge de `dev` dans `main` se font sur demande.
 - Avant chaque tag de palier : audit du diff depuis le tag précédent (bugs, sécurité, écarts avec le plan, documentation). Les corrections passent par une branche `fix/review-<version>`, mergée dans `dev` avant le tag.
+- Avant chaque tag de palier, après l'audit : mise à jour de `docs/report-notes.md` (ce qui est atteint, preuves et captures, choix à justifier, mesures).
 - On prévient l'autre avant de commencer une étape. Une étape dont toutes les dépendances sont cochées peut se faire en parallèle d'une autre.
 - Ignorés par git :
   - `idee.md`, `sujet.pdf` ;
@@ -639,6 +640,7 @@ Chaque étape de cette section ajoute ses contrôles à `scripts/check-security.
 
 - [ ] 43. Rapport
   - Objectif :
+    - rédigé à partir de `docs/report-notes.md` ;
     - tableau « palier, preuve (commande, capture) » ;
     - schéma d'architecture ;
     - une phrase sur le choix de la Gateway API plutôt que `VirtualService` ;

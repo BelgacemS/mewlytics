@@ -21,6 +21,7 @@ The work follows the steps of [PLAN.md](PLAN.md), one step at a time.
 
 - Pushing, and merging `dev` into `main`, happen only when both of us agree, not automatically after every step.
 - Before tagging a grading level, review the diff since the previous tag (`git diff v<previous>..dev`): bugs, security, gaps with the plan, documentation. Fixes go on a `fix/review-<version>` branch, merged into `dev` before the tag.
+- Then, still before the tag, update `docs/report-notes.md` (in French, like the report): what the level achieves, evidence (commands and screenshots), choices to justify, measurements.
 - Commit messages are short, in English, in the imperative mood, with no type prefix and no trailer. Examples: `Init repository`, `Add catalog read endpoints`, `Skip pairings without opponent`. Add a body only when it is really needed.
 - Never commit secrets (`.env`, keys, certificates), data, run outputs or generated manifests. They are listed in `.gitignore`.
 
