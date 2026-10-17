@@ -113,6 +113,9 @@ main() {
   fi
 
   "${kube[@]}" apply -k "$overlay"
+  # istiod creates the gateway Deployment from the Gateway object, possibly after
+  # apply returns: without this wait, rollout status could skip it.
+  "${kube[@]}" -n "$NAMESPACE" wait --for=create deploy/gateway-istio --timeout=60s
   "${kube[@]}" -n "$NAMESPACE" rollout status deploy --timeout=180s
   "${kube[@]}" -n "$NAMESPACE" get pods
 }
