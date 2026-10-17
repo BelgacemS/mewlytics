@@ -42,6 +42,29 @@ scripts/addons.sh remove
 
 Stop the cluster between sessions with `minikube stop`. The first run of `scripts/bootstrap-minikube.sh` took 7 min 23 s, mostly image downloads.
 
+### Deploy
+
+Deploy the images published on Docker Hub, at the tags set in `k8s/overlays/local`:
+
+```sh
+scripts/deploy.sh local
+```
+
+To try local changes, build a service inside minikube and deploy that build instead:
+
+```sh
+scripts/deploy.sh local --dev catalog
+```
+
+All pods in the `mewlytics` namespace get an Istio sidecar. Pods created before injection was enabled only get it after `kubectl -n mewlytics rollout restart deploy`.
+
+The application is reached through the Istio gateway, which gets an address once `minikube tunnel` runs. Keep it open in a separate terminal: it asks for the sudo password because the gateway listens on port 80. With the docker driver on macOS, the address is `127.0.0.1`:
+
+```sh
+minikube tunnel
+curl http://127.0.0.1/api/catalog/tournaments
+```
+
 ### Memory
 
 Measured on a MacBook Air M1 with 8 GB, Docker Desktop at 4.5 GB, minikube at 4 GB, three test pods with a sidecar (Python `http.server`), and a browser and an editor open:
