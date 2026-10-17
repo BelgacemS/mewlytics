@@ -424,7 +424,9 @@ Chaque étape de cette section ajoute ses contrôles à `scripts/check-security.
     - certificat auto-signé généré par `scripts/gen-certs.sh`, idempotent et appelé par `create-secrets.sh` ;
     - Secret TLS et listener `https` ;
     - les HTTPRoute de l'application passent en `sectionName: https` ;
-    - une HTTPRoute séparée sur le listener `http` porte le filtre `RequestRedirect` (`scheme: https`, `statusCode: 301`).
+    - une HTTPRoute séparée sur le listener `http` porte le filtre `RequestRedirect` (`scheme: https`, `statusCode: 301`) ;
+    - retrait des en-têtes `server: istio-envoy` et `x-envoy-upstream-service-time` dans les réponses de la gateway ;
+    - décider si la doc Swagger de catalog (`/api/catalog/docs`, `/api/catalog/openapi.json`) reste publique.
   - Vérification, par `scripts/check-security.sh` : `curl -k https://<ip>/api/catalog/tournaments` répond ; `curl -I http://<ip>/api/catalog/tournaments` renvoie 301.
 
 - [ ] 25. PSA en `enforce`
@@ -470,6 +472,7 @@ Chaque étape de cette section ajoute ses contrôles à `scripts/check-security.
     - script de création : cluster zonal Standard, 2 nœuds `e2-medium`, `--workload-pool=<projet>.svc.id.goog` (une des options qui activent le CNI sur GKE selon la doc Istio CNI) ;
     - CRD Gateway API de la même version qu'en local, ou `--gateway-api=standard` ;
     - Istio avec `values.global.platform=gke` et le même seccomp de gateway qu'en local ;
+    - le Service `gateway-istio` n'expose pas le port de santé 15021 sur l'IP publique ;
     - alerte budgétaire sur le coût avant crédits.
     
     L'essai Google Cloud n'est activé qu'à cette étape.
