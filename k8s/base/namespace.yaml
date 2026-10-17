@@ -1,9 +1,10 @@
 # PSA restricted in warn and audit mode for now; enforce comes once every
-# workload, sidecars included, is known to comply.
+# workload, sidecars included, is known to comply. Every pod gets an Istio sidecar.
 apiVersion: v1
 kind: Namespace
 metadata:
   name: mewlytics
   labels:
+    istio-injection: enabled
     pod-security.kubernetes.io/warn: restricted
     pod-security.kubernetes.io/audit: restricted

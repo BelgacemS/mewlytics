@@ -16,3 +16,7 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
+    # Python stays on the version pinned in .python-version and tested in CI
+    ignore:
+      - dependency-name: python
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]

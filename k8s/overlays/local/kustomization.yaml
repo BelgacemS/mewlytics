@@ -5,4 +5,4 @@ resources:
 # Exact tags only, never latest
 images:
   - name: docker.io/belgacems/mewlytics-catalog
-    newTag: 0.10.0
+    newTag: 0.12.0
