@@ -201,7 +201,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
 
 ### C. Palier 12 : gateway
 
-- [ ] 7. Gateway Istio
+- [x] 7. Gateway Istio
   - Objectif : injection des sidecars dans le namespace, `Gateway` et `HTTPRoute` pour `/api/catalog`, `minikube tunnel`.
   - Fichiers : `k8s/base/istio/`.
   - Vérification :
