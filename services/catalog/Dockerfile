@@ -1,7 +1,7 @@
 # Build from the repository root: the workspace lockfile lives there.
 #   minikube image build -t <user>/mewlytics-catalog:dev -f services/catalog/Dockerfile .
 
-FROM ghcr.io/astral-sh/uv:0.13.1@sha256:4a1f3666816dafadd20ceb71eac9a7d56d7ef30279f7d64048519ab901ada336 AS uv
+FROM ghcr.io/astral-sh/uv:0.13.10@sha256:a3ea1357342c1a4bf9a0c53a3deb1b55379aefa037338d8113d5771efa01774f AS uv
 
 FROM python:3.12-slim-trixie@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS builder
 COPY --from=uv /uv /bin/uv
