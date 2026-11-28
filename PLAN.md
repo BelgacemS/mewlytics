@@ -217,7 +217,7 @@ Légende : [cœur] = cœur de la méthode, à savoir défendre à l'oral. Sauf m
 
 ### D. Palier 14 : deux services reliés
 
-- [ ] 8. Service `auth` en local
+- [x] 8. Service `auth` en local
   - Objectif :
     - `POST /api/auth/register` ;
     - `POST /api/auth/login`, qui renvoie un JWT RS256 avec `iss`, `kid` et une expiration ;
